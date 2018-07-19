@@ -3,11 +3,11 @@ import ("fmt"
        "math")
 
 
-func foo(){
-    fmt.Println("\nThe square root of 64 is : ",math.Sqrt(64))
-}
+//func foo(){
+//    fmt.Println("\nThe square root of 64 is : ",math.Sqrt(64))
+//}
 
 func main(){
-    foo()
+//    foo()
 //    fmt.Println("\nThe square root of 64 is : ",math.Sqrt(64))
 }
