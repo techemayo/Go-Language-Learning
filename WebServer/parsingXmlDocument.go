@@ -6,14 +6,20 @@ import ("fmt"
 		"encoding/xml")
 
 type SitemapIndex struct {
-	Locations []Location `xml:"sitemap>loc"`
+	Locations []string `xml:"sitemap>loc"`
 }
 
 type News struct{
 	Titles []string `xml:"url>news>title"`
-	Keywords []string `xml:"url>news>Keywords"`
-	Location []string `xml:"url>loc"`
+	Keywords []string `xml:"url>news>keywords"`
+	Locations []string `xml:"url>loc"`
 }
+
+type NewsMap struct {
+	Keyword string
+	Location string
+}
+
 // type SitemapIndex struct {
 // 	Locations []Location `xml:"sitemap"`
 // }
@@ -38,9 +44,9 @@ func main(){
 	// resp.Body.Close() 		// Close body of byte data
 
 	// var s SitemapIndex //s variable declared
-	byte,_ := iotutil.ReadAll(resp.Body)
-	xml.Unmarshal(bytes,&s)
-	// xml.Unmarshal(bytes, &s) //
+	// byte,_ := ioutil.ReadAll(resp.Body)
+	// xml.Unmarshal(bytes,&s)
+	// // xml.Unmarshal(bytes, &s) //
 	// //fmt.Println(s.Locations)
 	// for _,Location := range s.Locations{
 	// 	fmt.Printf("\n%s", Location)
@@ -48,9 +54,27 @@ func main(){
 
 	var s SitemapIndex
 	var n News
+
+	
 	resp,_ := http.Get("https://www.washingtonpost.com/news-sitemap-index.xml")
-	for _,Location :=range s.Location{
-		resp,_:=ioutil.ReadAll(resp.Body)
+
+	bytes,_ := ioutil.ReadAll(resp.Body)
+	xml.Unmarshal(bytes,&s)
+	news_map := make(map[string] NewsMap)
+	for _,Location :=range s.Locations{
+
+		resp,_ := http.Get(Location)
+		bytes,_:=ioutil.ReadAll(resp.Body)
 		xml.Unmarshal(bytes,&n)
+		for idx,_ :=range n.Titles{
+			news_map[n.Titles[idx]] = NewsMap{n.Keywords[idx], n.Locations[idx]}
+		}
 	}
+	for idx,data := range news_map {
+		fmt.Println("\n\n\n", idx)
+		fmt.Println("\n", data.Keyword)
+		fmt.Println("\n", data.Location)
+
+	}
+
 }
