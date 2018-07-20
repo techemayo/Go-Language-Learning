@@ -14,7 +14,16 @@ func main(){
 
 	// infintie loop
 
-	for{
-		fmt.Println("Do stuff")
+	// for{
+	// 	fmt.Println("Do stuff")
+	// }
+
+	x := 5
+	for {
+		fmt.Println("Do stuff", x)
+		x+=3
+		if x>25{
+			break
+		}
 	}
 }
