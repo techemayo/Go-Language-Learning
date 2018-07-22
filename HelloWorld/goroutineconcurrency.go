@@ -6,11 +6,12 @@ import("time"
 
 var wg sync.WaitGroup // Wait group allows us to group go threads to wait for
 func say(s string){
+	defer wg.Done() //Done() tell the object that wait group has done executed
 	for i:=0;i<3;i++{
 	fmt.Println(s)
 	time.Sleep(time.Millisecond*100)
 	}
-	wg.Done() //Done() tell the object that wait group has done executed
+	
 }
 func main() {
 	wg.Add(1) // add will make the thread add in wait group of sync
