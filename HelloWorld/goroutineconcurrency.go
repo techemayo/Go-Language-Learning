@@ -4,12 +4,23 @@ import("time"
 		"fmt"
 		"sync")
 
+
 var wg sync.WaitGroup // Wait group allows us to group go threads to wait for
+
+func cleanup(){
+	if r := recover(); r!=nil {
+		fmt.Println("recovered in cleanup", r )
+	}
+}
 func say(s string){
 	defer wg.Done() //Done() tell the object that wait group has done executed
+	defer cleanup()
 	for i:=0;i<3;i++{
 	fmt.Println(s)
 	time.Sleep(time.Millisecond*100)
+	if i==2{
+		panic(" we got a 2")
+	}
 	}
 	
 }
