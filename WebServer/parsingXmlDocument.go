@@ -1,22 +1,24 @@
 package main
 
-import ("fmt"
-		"net/http" //library to trigger http get request
-		"io/ioutil" //library to read the bytes data from body of the response 
-		"encoding/xml")
+import (
+	"encoding/xml"
+	"fmt"
+	"io/ioutil" //library to read the bytes data from body of the response
+	"net/http"  //library to trigger http get request
+)
 
 type SitemapIndex struct {
 	Locations []string `xml:"sitemap>loc"`
 }
 
-type News struct{
-	Titles []string `xml:"url>news>title"`
-	Keywords []string `xml:"url>news>keywords"`
+type News struct {
+	Titles    []string `xml:"url>news>title"`
+	Keywords  []string `xml:"url>news>keywords"`
 	Locations []string `xml:"url>loc"`
 }
 
 type NewsMap struct {
-	Keyword string
+	Keyword  string
 	Location string
 }
 
@@ -33,10 +35,9 @@ type NewsMap struct {
 // }
 
 // [5] type == array //e.g: [5] int
-// [] type == slice //e.g: [] int 
+// [] type == slice //e.g: [] int
 
-
-func main(){
+func main() {
 	// resp, _ := http.Get("https://www.washingtonpost.com/news-sitemap-index.xml") //get request _ is used for the variable that we donot intend to use otherwise go will throw an error
 	// bytes, _ := ioutil.ReadAll(resp.Body) //reading byte from body of response byte data
 	// stringBody := string(bytes) //typecasting byte data into string
@@ -55,22 +56,21 @@ func main(){
 	var s SitemapIndex
 	var n News
 
-	
-	resp,_ := http.Get("https://www.washingtonpost.com/news-sitemap-index.xml")
+	resp, _ := http.Get("https://www.washingtonpost.com/news-sitemap-index.xml")
 
-	bytes,_ := ioutil.ReadAll(resp.Body)
-	xml.Unmarshal(bytes,&s)
-	news_map := make(map[string] NewsMap)
-	for _,Location :=range s.Locations{
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	xml.Unmarshal(bytes, &s)
+	news_map := make(map[string]NewsMap)
+	for _, Location := range s.Locations {
 
-		resp,_ := http.Get(Location)
-		bytes,_:=ioutil.ReadAll(resp.Body)
-		xml.Unmarshal(bytes,&n)
-		for idx,_ :=range n.Titles{
+		resp, _ := http.Get(Location)
+		bytes, _ := ioutil.ReadAll(resp.Body)
+		xml.Unmarshal(bytes, &n)
+		for idx, _ := range n.Titles {
 			news_map[n.Titles[idx]] = NewsMap{n.Keywords[idx], n.Locations[idx]}
 		}
 	}
-	for idx,data := range news_map {
+	for idx, data := range news_map {
 		fmt.Println("\n\n\n", idx)
 		fmt.Println("\n", data.Keyword)
 		fmt.Println("\n", data.Location)
